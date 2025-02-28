@@ -10,6 +10,7 @@ import torchvision
 import pandas as pd
 import numpy as np
 import time 
+import os
 
 def test(model, test_loader, device, system_metrics):
     model.eval()
@@ -42,12 +43,12 @@ def test(model, test_loader, device, system_metrics):
 
 if __name__ == "__main__":
     # check if command line arguments were valid 
-    if len(sys.argv) != 4:
-        print("Usage: python3 test.py [mobilenet|inception] [path_to_saved_model] [path_to_save_results]")
+    if len(sys.argv) != 5:
+        print("Usage: python3 test.py [mobilenet|inception] [path_to_saved_model] [path_to_save_results] [number_iterations]")
         sys.exit(1)
     elif sys.argv[1].lower() not in ["mobilenet", "inception"]:
         print("Error: model name must be either 'mobilenet' or 'inception'")
-        print("Usage: python3 test.py [mobilenet|inception] [path_to_saved_model] [path_to_save_results]")
+        print("Usage: python3 test.py [mobilenet|inception] [path_to_saved_model] [path_to_save_results] [number_iterations]")
         sys.exit(1)
 
     # determine model to run training on 
@@ -59,6 +60,9 @@ if __name__ == "__main__":
 
     # path to file to save results to
     results_path = sys.argv[3]
+
+    # number of iterations to test 
+    number_iterations = int(sys.argv[4])
 
     # set the device (GPU or CPU)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -74,9 +78,24 @@ if __name__ == "__main__":
     # create df to store data 
     system_metrics = collect_data.setup_df()
     pd.set_option('display.max_columns', None)  # Show all columns
+    
+    if number_iterations == 1:
+        # test
+        system_metrics, accuracy = test(model, test_loader, device, system_metrics)
 
-    # test
-    system_metrics, accuracy = test(model, test_loader, device, system_metrics)
+        # save summary of collected system metrics 
+        system_metrics.describe(include='all').to_csv(results_path)
+    else:
+        for i in range(number_iterations):
+            # test
+            system_metrics = collect_data.setup_df()
+            system_metrics, accuracy = test(model, test_loader, device, system_metrics)
 
-    # save summary of collected system metrics 
-    system_metrics.describe(include='all').to_csv(results_path)
+            # file name for specific iteration
+            results_filename = os.path.basename(results_path)
+            new_results_filename = str(i + 1) + "_" + results_filename
+            directory_path = os.path.dirname(results_path)
+            new_path = os.path.join(directory_path, new_results_filename)
+
+             # save summary of collected system metrics 
+            system_metrics.describe(include='all').to_csv(new_path)
