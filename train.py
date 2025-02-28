@@ -50,11 +50,11 @@ if __name__ == "__main__":
 
     # check if command line arguments were valid 
     if len(sys.argv) != 3:
-        print("Usage: python3 train.py [mobilenet|inception] [path_to_save_model]")
+        print("Usage: python3 train.py [mobilenet|inception|resnet18|alexnet|vgg16] [path_to_save_model]")
         sys.exit(1)
-    elif sys.argv[1].lower() not in ["mobilenet", "inception"]:
-        print("Error: model name must be either 'mobilenet' or 'inception'")
-        print("Usage: python3 train.py [mobilenet|inception] [path_to_save_model]")
+    elif sys.argv[1].lower() not in ["mobilenet", "inception", "resnet18", "alexnet", "vgg16"]:
+        print("Error: model name must be either 'mobilenet', 'inception', 'resnet18', 'alexnet', 'vgg16'")
+        print("Usage: python3 train.py [mobilenet|inception|resnet18|alexnet|vgg16] [path_to_save_model]")
         sys.exit(1)
 
     # determine model to run training on 

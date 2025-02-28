@@ -18,7 +18,7 @@ def setup_train_data_loader(model_name):
     preprocess = return_preprocess(model_name)
 
     # load cifar-10 dataset
-    trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=preprocess)
+    trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=False, transform=preprocess)
     train_loader = DataLoader(trainset, batch_size=16, shuffle=True)
 
     return train_loader
@@ -29,7 +29,7 @@ def setup_test_data_loader(model_name, number_samples=-1):
     # load cifar-10 dataset
     if number_samples == -1: 
         # load full test set 
-        testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=preprocess)
+        testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=False, transform=preprocess)
         test_loader = DataLoader(testset, batch_size=16, shuffle=False) 
     else: 
         # load random subset of size number_samples of the test set 
@@ -43,7 +43,7 @@ def setup_test_data_loader(model_name, number_samples=-1):
 # determines and returns preprocess steps based on model selected by the user 
 def return_preprocess(model_name):
     preprocess = None
-    if model_name == "mobilenet":
+    if model_name == "mobilenet" or model_name == "resnet18" or model_name == "alexnet":
         preprocess = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),

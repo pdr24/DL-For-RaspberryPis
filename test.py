@@ -44,11 +44,11 @@ def test(model, test_loader, device, system_metrics):
 if __name__ == "__main__":
     # check if command line arguments were valid 
     if len(sys.argv) != 5:
-        print("Usage: python3 test.py [mobilenet|inception] [path_to_saved_model] [path_to_save_results] [number_iterations]")
+        print("Usage: python3 test.py [mobilenet|inception|resnet18|alexnet|vgg16] [path_to_saved_model] [path_to_save_results] [number_iterations]")
         sys.exit(1)
-    elif sys.argv[1].lower() not in ["mobilenet", "inception"]:
-        print("Error: model name must be either 'mobilenet' or 'inception'")
-        print("Usage: python3 test.py [mobilenet|inception] [path_to_saved_model] [path_to_save_results] [number_iterations]")
+    elif sys.argv[1].lower() not in ["mobilenet", "inception", "resnet18", "alexnet", "vgg16"]:
+        print("Error: model name must be either 'mobilenet', 'inception', 'resnet18', 'alexnet', 'vgg16'")
+        print("Usage: python3 test.py [mobilenet|inception|resnet18|alexnet|vgg16] [path_to_saved_model] [path_to_save_results] [number_iterations]")
         sys.exit(1)
 
     # determine model to run training on 

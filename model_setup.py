@@ -13,6 +13,10 @@ def setup_model(model_name):
         return setup_mobilenet_model()
     elif model_name == "inception":
         return setup_inception_model()
+    elif model_name == "resnet18":
+        return setup_resnet18_model()
+    elif model_name == "alexnet":
+        return setup_alexnet_model()
     else:
         print("Error: model not detected")
         sys.exit(1)
@@ -36,11 +40,28 @@ def setup_inception_model():
 
     return model
 
+# sets up resnet18 model for use with cifar-10 dataset 
+def setup_resnet18_model():
+    model = models.resnet18(pretrained=True)
+
+    # modify to match cifar-10's 10 output classes 
+    model.fc = nn.Linear(model.fc.in_features, 10)  
+
+    return model
+
+# sets up alexnet model for use with cifar-10 dataset 
+def setup_alexnet_model():
+    model = models.alexnet(pretrained=True)
+    model.classifier[6] = nn.Linear(model.classifier[6].in_features, 10)  # Adjust for CIFAR-10 classes
+    return model
+
 def load_saved_model(model_name, model_path, device):
     if model_name == "mobilenet":
         return load_saved_mobilenet_model(model_path, device).to(device)
     elif model_name == "inception":
         return load_saved_inception_model(model_path, device).to(device)
+    elif model_name == "resnet18":
+        return load_saved_resnet18_model(model_path, device).to(device)
     else:
         print(f"Error: invalid model name {model_name} received by load_saved_model() in model_setup.py")
 
@@ -71,3 +92,30 @@ def load_saved_inception_model(model_path="inception_cifar10.pth", device="cpu")
     model.eval()
     
     return model
+
+def load_saved_resnet18_model(model_path="resnet18_cifar10.pth", device="cpu"):
+    # initialize model architecture
+    model = models.resnet18(weights=None)  
+    model.fc = nn.Linear(model.fc.in_features, 10)  # Adjust for CIFAR-10 classes
+    
+    # load the saved state directory 
+    state_dict = torch.load(model_path, map_location=torch.device(device))
+    model.load_state_dict(state_dict)
+    
+    model.eval()  
+    
+    return model
+
+def load_saved_alexnet_model(model_path="alexnet_cifar10.pth", device="cpu"):
+    model = models.alexnet(weights=None)  # Initialize AlexNet without pretrained weights
+    model.classifier[6] = nn.Linear(model.classifier[6].in_features, 10)  # Adjust for CIFAR-10 classes
+    
+    # Load model weights with correct device mapping
+    state_dict = torch.load(model_path, map_location=torch.device(device))
+    model.load_state_dict(state_dict)
+    
+    model.to(device)  # Move model to the specified device
+    model.eval()  # Set model to evaluation mode
+    
+    return model
+
