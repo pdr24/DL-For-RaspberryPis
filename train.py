@@ -73,7 +73,7 @@ if __name__ == "__main__":
     # model parameters
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
-    epochs = 2
+    epochs = 10
 
     # create df to store data 
     system_metrics = collect_data.setup_df()

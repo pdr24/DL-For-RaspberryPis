@@ -8,10 +8,11 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Subset
 import torchvision.models as models
+import numpy as np
 
-def setup_data(model_name):
+def setup_data(model_name, number_samples=-1):
     preprocess = return_preprocess(model_name)
-    return setup_train_data_loader(model_name), setup_test_data_loader(model_name)
+    return setup_train_data_loader(model_name), setup_test_data_loader(model_name, number_samples)
 
 def setup_train_data_loader(model_name):
     preprocess = return_preprocess(model_name)
@@ -22,15 +23,22 @@ def setup_train_data_loader(model_name):
 
     return train_loader
 
-def setup_test_data_loader(model_name):
+def setup_test_data_loader(model_name, number_samples=-1):
     preprocess = return_preprocess(model_name)
 
     # load cifar-10 dataset
-    testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=preprocess)
-    test_loader = DataLoader(testset, batch_size=16, shuffle=False) 
+    if number_samples == -1: 
+        # load full test set 
+        testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=preprocess)
+        test_loader = DataLoader(testset, batch_size=16, shuffle=False) 
+    else: 
+        # load random subset of size number_samples of the test set 
+        testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=preprocess)
+        subset_indices = np.random.choice(len(testset), number_samples, replace=False)  # select a random subset of test samples
+        test_subset = Subset(testset, subset_indices)
+        test_loader = DataLoader(test_subset, batch_size=16, shuffle=False) 
 
     return test_loader
-
 
 # determines and returns preprocess steps based on model selected by the user 
 def return_preprocess(model_name):

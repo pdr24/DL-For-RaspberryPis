@@ -35,3 +35,39 @@ def setup_inception_model():
     model.fc = nn.Linear(model.fc.in_features, 10)
 
     return model
+
+def load_saved_model(model_name, model_path, device):
+    if model_name == "mobilenet":
+        return load_saved_mobilenet_model(model_path, device).to(device)
+    elif model_name == "inception":
+        return load_saved_inception_model(model_path, device).to(device)
+    else:
+        print(f"Error: invalid model name {model_name} received by load_saved_model() in model_setup.py")
+
+def load_saved_mobilenet_model(model_path="mobilenetv2_cifar10.pth", device="cpu"):
+    # initialize the model architecture
+    model = models.mobilenet_v2(weights=None)  
+    model.classifier[1] = nn.Linear(model.last_channel, 10)  # adjust for cifar-10
+
+    # load the saved state dictionary, ensuring it is mapped to the correct device
+    state_dict = torch.load(model_path, map_location=torch.device(device), weights_only=True)
+    model.load_state_dict(state_dict)
+
+    # set the model to evaluation mode
+    model.eval()
+    
+    return model
+
+def load_saved_inception_model(model_path="inception_cifar10.pth", device="cpu"):
+    # initialize model architecture 
+    model = models.inception_v3(weights=None, aux_logits=True)
+    model.fc = nn.Linear(model.fc.in_features, 10)  # Adjust for CIFAR-10 classes
+    
+    # load the saved state directory 
+    state_dict = torch.load(model_path, map_location=torch.device(device))
+    model.load_state_dict(state_dict)
+
+    # set the model to evaluation mode
+    model.eval()
+    
+    return model
