@@ -11,7 +11,7 @@ import torchvision.models as models
 
 def setup_data(model_name):
     preprocess = return_preprocess(model_name)
-    return setup_train_data_loader(preprocess), setup_test_data_loader(preprocess)
+    return setup_train_data_loader(model_name), setup_test_data_loader(model_name)
 
 def setup_train_data_loader(model_name):
     preprocess = return_preprocess(model_name)
@@ -34,6 +34,7 @@ def setup_test_data_loader(model_name):
 
 # determines and returns preprocess steps based on model selected by the user 
 def return_preprocess(model_name):
+    preprocess = None
     if model_name == "mobilenet":
         preprocess = transforms.Compose([
             transforms.Resize((224, 224)),
@@ -46,4 +47,6 @@ def return_preprocess(model_name):
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
             ])
+    else:
+        print(f"Error: model_name {model_name} is invalid")
     return preprocess
