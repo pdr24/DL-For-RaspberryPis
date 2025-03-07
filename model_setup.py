@@ -83,7 +83,7 @@ def load_saved_model(model_name, model_path, device):
         return load_saved_alexnet_model(model_path, device).to(device)
     elif model_name == "vgg16":
         return load_saved_vgg16_model(model_path, device).to(device)
-    elif model_name == "squeezenet"
+    elif model_name == "squeezenet":
         return load_saved_squeezenet_model(model_path, device).to(device)
     else:
         print(f"Error: invalid model name {model_name} received by load_saved_model() in model_setup.py")
