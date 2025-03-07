@@ -52,9 +52,9 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: python3 train.py [mobilenet|inception|resnet18|alexnet|vgg16] [path_to_save_model]")
         sys.exit(1)
-    elif sys.argv[1].lower() not in ["mobilenet", "inception", "resnet18", "alexnet", "vgg16"]:
-        print("Error: model name must be either 'mobilenet', 'inception', 'resnet18', 'alexnet', 'vgg16'")
-        print("Usage: python3 train.py [mobilenet|inception|resnet18|alexnet|vgg16] [path_to_save_model]")
+    elif sys.argv[1].lower() not in ["mobilenet", "inception", "resnet18", "alexnet", "vgg16", "squeezenet"]:
+        print("Error: model name must be either 'mobilenet', 'inception', 'resnet18', 'alexnet', 'vgg16', 'squeezenet'")
+        print("Usage: python3 train.py [mobilenet|inception|resnet18|alexnet|vgg16|squeezenet] [path_to_save_model]")
         sys.exit(1)
 
     # determine model to run training on 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     # model parameters
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
-    epochs = 10
+    epochs = 50
 
     # create df to store data 
     system_metrics = collect_data.setup_df()

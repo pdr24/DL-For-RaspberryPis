@@ -43,7 +43,7 @@ def setup_test_data_loader(model_name, number_samples=-1):
 # determines and returns preprocess steps based on model selected by the user 
 def return_preprocess(model_name):
     preprocess = None
-    if model_name == "mobilenet" or model_name == "resnet18" or model_name == "alexnet":
+    if model_name in ["mobilenet", "resnet18", "alexnet", "vgg16", "squeezenet"]:
         preprocess = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),
