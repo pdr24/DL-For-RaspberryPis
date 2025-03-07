@@ -4,7 +4,7 @@ import glob
 import sys
 
 # Get a list of all CSV files 
-csv_files = glob.glob("results/alexnet_results/*_results_*.csv")  
+csv_files = glob.glob("results/squeezenet_results/*")  
 print(csv_files)
 
 df = pd.read_csv(csv_files[0], index_col=0)  # Read CSV with first column as index
